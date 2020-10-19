@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:mypocket/main.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
+import 'package:mypocket/database/Database_provider.dart';
+
+//The page where a transction gets input
 
 class AddTransaction extends StatefulWidget {
   @override
@@ -10,6 +13,8 @@ class AddTransaction extends StatefulWidget {
 }
 
 class _AddTransactionState extends State<AddTransaction> {
+
+  //variable for radio button
   int  selectedButton = -1;
   @override
   Widget build(BuildContext context) {
@@ -19,10 +24,14 @@ class _AddTransactionState extends State<AddTransaction> {
         title: Text('Add Transaction'),
       ),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: new Center(
+
+      //Body of the form
+
+      body: SingleChildScrollView(  //To make page scrollable
+        child: new Center(//Center the form
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.stretch, //make form to take the whole width of screen
+
             children: <Widget>[
 
               Container(
@@ -130,7 +139,9 @@ class _AddTransactionState extends State<AddTransaction> {
 
                   shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(25)),
-                  onPressed: () {},
+                  onPressed: () {
+
+                  },
                   child: Text(
                     "Save",
                     style: TextStyle(

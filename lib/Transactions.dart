@@ -5,17 +5,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Transaction{
+class Transactions{
   String _tId;
   int _amount;
   bool _inOut;
   DateTime _dateTime;
   String _title;
 
-  Transaction(this._amount, this._inOut, this._dateTime,
+  Transactions(this._amount, this._inOut, this._dateTime,
       this._title,[this._tId]);
 
-  Transaction.withId(this._tId, this._amount, this._inOut, this._dateTime,
+  Transactions.withId(this._tId, this._amount, this._inOut, this._dateTime,
       this._title);
 
   String get title => _title;
@@ -59,7 +59,7 @@ class Transaction{
     return map;
   }
 
-  Transaction.formMapObject (Map<String, dynamic> map) {
+  Transactions.formMapObject (Map<String, dynamic> map) {
     this._tId  = map['tid'];
     this._title = map['title'];
     this._amount = map['amount'];
