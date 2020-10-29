@@ -5,7 +5,7 @@ import 'package:mypocket/Pages/add_transaction.dart';
 import 'package:mypocket/main.dart';
 import 'package:mypocket/Transactions.dart';
 
-List<Transactions> list = [new Transactions(200, false, DateTime.now(),"Swiggy", "t1"), Transactions(5888, true, DateTime.now(),"S2wiggy", "t12"),];
+List<Transactions> list = [new Transactions(200, 0,"Swiggy", 1), Transactions(5888, 1, "S2wiggy", 3),];
 
 
 class Home extends StatefulWidget {
@@ -55,13 +55,13 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Icon (
-                      (list[index].inOut) ? Icons.arrow_upward : Icons.arrow_downward,
-                      color: (list[index].inOut) ? Colors.green : Colors.red,
+                      (list[index].inout == 0) ? Icons.arrow_upward : Icons.arrow_downward,
+                      color: (list[index].inout == 0) ? Colors.green : Colors.red,
                     ),
                     Text(
                       "\$${list[index].amount.toString()}",
                       style: TextStyle(
-                          color: (list[index].inOut)? Colors.green : Colors.red,
+                          color: (list[index].inout == 0)? Colors.green : Colors.red,
                           fontSize: 25
                       ),
                     ),
@@ -70,7 +70,7 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
-              Row(
+              /*Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
@@ -78,7 +78,7 @@ class _HomeState extends State<Home> {
                   )
                 ],
               )
-
+*/
             ],
           ),
         ),

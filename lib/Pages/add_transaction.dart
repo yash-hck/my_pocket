@@ -1,5 +1,12 @@
+//import 'dart:html';
+
+//import 'dart:html';
+
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mypocket/Transactions.dart';
 import 'package:mypocket/main.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +15,9 @@ import 'package:mypocket/database/Database_provider.dart';
 //The page where a transction gets input
 
 class AddTransaction extends StatefulWidget {
+
+
+
   @override
   _AddTransactionState createState() => _AddTransactionState();
 }
@@ -15,7 +25,14 @@ class AddTransaction extends StatefulWidget {
 class _AddTransactionState extends State<AddTransaction> {
 
   //variable for radio button
+
+  TextEditingController titleController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   int  selectedButton = -1;
+
+  Transactions transaction = Transactions(100, 0, "ejn");
+  DatabaseProvider provider = DatabaseProvider();
   @override
   Widget build(BuildContext context) {
 
@@ -38,6 +55,7 @@ class _AddTransactionState extends State<AddTransaction> {
                 margin: EdgeInsets.only(top: 20),
                 padding: EdgeInsets.fromLTRB(25, 10, 25, 0),
                 child: TextFormField(
+                  controller: titleController,
 
                   decoration: new InputDecoration(
                     filled: true,
@@ -53,12 +71,18 @@ class _AddTransactionState extends State<AddTransaction> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  onChanged: (value) {
+                  updateTitle();
+                },
                 ),
               ),
               Container(
                 padding: EdgeInsets.fromLTRB(25, 10, 25, 0),
                 child: TextFormField(
-                  
+                  onChanged: (value) {
+                    updateAmount();
+                  },
+                  controller: amountController,
                   keyboardType: TextInputType.number,
                   style: TextStyle(
                     fontSize: 25
@@ -73,11 +97,17 @@ class _AddTransactionState extends State<AddTransaction> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+
                 ),
               ),
               Container(
                 padding: EdgeInsets.all(25),
                 child: TextFormField(
+
+                  onChanged: (value) {
+                    //_showAlertDialog("ld", "dj");
+                    updateDate();
+                  },
 
                   decoration: new InputDecoration(
                       filled: true,
@@ -98,8 +128,11 @@ class _AddTransactionState extends State<AddTransaction> {
                     groupValue: selectedButton,
                     activeColor: Colors.green,
                     onChanged: (value) {
+                      //transaction.inOut = true;
                       setState(() {
                         selectedButton = value;
+
+                        //transaction.inOut = (value == 0)?false : true;
                       });
                     },
                   ),
@@ -118,6 +151,8 @@ class _AddTransactionState extends State<AddTransaction> {
                     onChanged: (value) {
                       setState(() {
                         selectedButton = value;
+
+                        //transaction.inOut = (value == 0)?false : true;
                       });
                     },
                   ),
@@ -140,7 +175,10 @@ class _AddTransactionState extends State<AddTransaction> {
                   shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(25)),
                   onPressed: () {
-
+                    setState(() {
+                      //debugPrint("Successfully saved");
+                      _save();
+                    });
                   },
                   child: Text(
                     "Save",
@@ -160,5 +198,68 @@ class _AddTransactionState extends State<AddTransaction> {
     );
 
 
+  }
+
+  void updateTitle() {
+    transaction.title = titleController.text;
+  }
+
+  void updateAmount() {
+    transaction.amount = int.parse(amountController.text);
+
+  }
+
+  void updateDate() {
+
+  }
+
+  void _save() async {
+    DateTime now = DateTime. now();
+    DateFormat formatter = DateFormat('yyyy-MM-dd');
+    String formatted = formatter. format(now);
+    //transaction.inOut = true;
+    //transaction.datetime = formatted;
+
+    if(selectedButton == 1)transaction.inout = 0;
+    else transaction.inout = 1;
+
+    //_showAlertDialog(transaction.title.runtimeType.toString() + transaction.amount.runtimeType.toString(), transaction.inout.runtimeType.toString());
+    print("before" );
+    int result = 0;
+    if(transaction.tId == null){
+      print("null tid");
+      result = await provider.InsertIntoDB(transaction);
+    }
+
+    int cp = await provider.getCount();
+
+
+    print("after " + cp.toString());
+    if(result!=0){
+      //_showAlertDialog("success", "ine");
+      Navigator.pop(context, true);
+    }
+    else _showAlertDialog("fail", "NO");
+
+    //_showAlertDialog("j3j", "irhj");
+  }
+
+  void _showAlertDialog(String title, String message) {
+
+    AlertDialog alertDialog = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+    );
+    showDialog(
+        context: context,
+        builder: (_) => alertDialog
+    );
+  }
+
+  static String getdate() {
+    DateTime now = DateTime. now();
+    DateFormat formatter = DateFormat('yyyy-MM-dd');
+    String formatted = formatter. format(now);
+    return formatted;
   }
 }

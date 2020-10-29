@@ -6,16 +6,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Transactions{
-  String _tId;
+  int _tid;
   int _amount;
-  bool _inOut;
-  DateTime _dateTime;
+  int _inout;
+  //String _datetime;
   String _title;
 
-  Transactions(this._amount, this._inOut, this._dateTime,
-      this._title,[this._tId]);
+  Transactions(this._amount, this._inout, //this._datetime,
+      this._title,[this._tid]);
 
-  Transactions.withId(this._tId, this._amount, this._inOut, this._dateTime,
+  Transactions.withId(this._tid, this._amount, this._inout, //this._datetime,
       this._title);
 
   String get title => _title;
@@ -24,16 +24,16 @@ class Transactions{
     _title = value;
   }
 
-  DateTime get dateTime => _dateTime;
+  //String get dateTime => _datetime;
 
-  set dateTime(DateTime value) {
-    _dateTime = value;
-  }
+  /*set datetime(String value) {
+    _datetime = value;
+  }*/
 
-  bool get inOut => _inOut;
+  int get inout => _inout;
 
-  set inOut(bool value) {
-    _inOut = value;
+  set inout(int value) {
+    _inout = value;
   }
 
   int get amount => _amount;
@@ -42,29 +42,31 @@ class Transactions{
     _amount = value;
   }
 
-  String get tId => _tId;
+  int get tId => _tid;
 
-  set tId(String value) {
-    _tId = value;
+  set tId(int value) {
+    _tid = value;
   }
 
   Map<String, dynamic> toMap(){
     var map = Map<String, dynamic>();
+    if(_tid != null)
+      map['tid'] = _tid;
 
-    map['tid'] = _tId;
+
     map['title'] = _title;
     map['amount'] = _amount;
-    map['inout'] = _inOut;
-    map['datetime'] = _dateTime;
+    map['inout'] = _inout;
+    //map['datetime'] = _datetime;
     return map;
   }
 
   Transactions.formMapObject (Map<String, dynamic> map) {
-    this._tId  = map['tid'];
+    this._tid  = map['tid'];
     this._title = map['title'];
     this._amount = map['amount'];
-    this._inOut = map['inout'];
-    this._dateTime = map['datetime'];
+    this._inout = map['inout'];
+    //this._datetime = map['datetime'];
   }
 
 
