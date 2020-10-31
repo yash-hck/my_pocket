@@ -9,13 +9,13 @@ class Transactions{
   int _tid;
   int _amount;
   int _inout;
-  //String _datetime;
+  String _datetime;
   String _title;
 
   Transactions(this._amount, this._inout, //this._datetime,
-      this._title,[this._tid]);
+      this._title,this._datetime ,[this._tid]);
 
-  Transactions.withId(this._tid, this._amount, this._inout, //this._datetime,
+  Transactions.withId(this._tid, this._amount,this._datetime, this._inout, //this._datetime,
       this._title);
 
   String get title => _title;
@@ -24,11 +24,11 @@ class Transactions{
     _title = value;
   }
 
-  //String get dateTime => _datetime;
+  String get dateTime => _datetime;
 
-  /*set datetime(String value) {
+  set datetime(String value) {
     _datetime = value;
-  }*/
+  }
 
   int get inout => _inout;
 
@@ -57,16 +57,16 @@ class Transactions{
     map['title'] = _title;
     map['amount'] = _amount;
     map['inout'] = _inout;
-    //map['datetime'] = _datetime;
+    map['datetime'] = _datetime;
     return map;
   }
 
-  Transactions.formMapObject (Map<String, dynamic> map) {
+  Transactions.fromMapObject (Map<String, dynamic> map) {
     this._tid  = map['tid'];
     this._title = map['title'];
     this._amount = map['amount'];
     this._inout = map['inout'];
-    //this._datetime = map['datetime'];
+    this._datetime = map['datetime'];
   }
 
 

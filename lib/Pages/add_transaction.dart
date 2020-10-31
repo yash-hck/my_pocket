@@ -31,7 +31,7 @@ class _AddTransactionState extends State<AddTransaction> {
   TextEditingController dateController = TextEditingController();
   int  selectedButton = -1;
 
-  Transactions transaction = Transactions(100, 0, "ejn");
+  Transactions transaction = Transactions(100, 0, "ejn","");
   DatabaseProvider provider = DatabaseProvider();
   @override
   Widget build(BuildContext context) {
@@ -214,11 +214,7 @@ class _AddTransactionState extends State<AddTransaction> {
   }
 
   void _save() async {
-    DateTime now = DateTime. now();
-    DateFormat formatter = DateFormat('yyyy-MM-dd');
-    String formatted = formatter. format(now);
-    //transaction.inOut = true;
-    //transaction.datetime = formatted;
+    transaction.datetime = DateFormat.yMMMd().format(DateTime.now());
 
     if(selectedButton == 1)transaction.inout = 0;
     else transaction.inout = 1;

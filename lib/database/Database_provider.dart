@@ -18,7 +18,7 @@ class DatabaseProvider {
   String TITLE = 'title';
   String AMOUNT = 'amount';
   String INOUT = 'inout';
-  //String DATE = 'datetime';
+  String DATE = 'datetime';
 
   DatabaseProvider._();
 
@@ -27,13 +27,13 @@ class DatabaseProvider {
   static Database _database;
 
   factory DatabaseProvider(){
-    if(_databaseProvider == null)_databaseProvider = DatabaseProvider._();
+    if (_databaseProvider == null) _databaseProvider = DatabaseProvider._();
 
     return _databaseProvider;
   }
 
   Future<Database> get database async {
-    print("call");
+    //print("call");
     if (_database != null) return _database;
 
     _database = await createDatabase();
@@ -42,17 +42,18 @@ class DatabaseProvider {
 
   createDatabase() async {
     return await openDatabase(
-        join(await getDatabasesPath(), 'TransactionDB'),version: 1,
+        join(await getDatabasesPath(), 'TransactionDB'), version: 1,
         onCreate: (_databaseProvider, version) async {
           print("database created");
-          await _databaseProvider.execute('CREATE TABLE $TRANSACTION_TABLE ($ID INTEGER PRIMARY KEY AUTOINCREMENT, $TITLE TEXT,  $AMOUNT NUMBER, $INOUT NUMBER)');
+          await _databaseProvider.execute(
+              'CREATE TABLE $TRANSACTION_TABLE ($ID INTEGER PRIMARY KEY AUTOINCREMENT, $TITLE TEXT,  $AMOUNT NUMBER, $INOUT NUMBER, $DATE TEXT)');
         }
     );
   }
 
   //Function to get List of all data as list of maps
 
-  Future<List<Map<String, dynamic>>> getTransactionMapList() async{
+  Future<List<Map<String, dynamic>>> getTransactionMapList() async {
     Database db = await this.database;
 
     var result = await db.query(TRANSACTION_TABLE);
@@ -68,12 +69,12 @@ class DatabaseProvider {
     var result = await db.insert(TRANSACTION_TABLE, transaction.toMap());
 
     return result;
-
   }
 
   Future<int> getCount() async {
     Database db = await this.database;
-    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $TRANSACTION_TABLE');
+    List<Map<String, dynamic>> x = await db.rawQuery(
+        'SELECT COUNT (*) from $TRANSACTION_TABLE');
     int result = Sqflite.firstIntValue(x);
     return result;
   }
@@ -83,7 +84,9 @@ class DatabaseProvider {
   Future<int> updateDB(Transactions transaction) async {
     Database db = await this.database;
 
-    var result = await db.update(TRANSACTION_TABLE, transaction.toMap(), where: '$ID', whereArgs: [transaction.tId]);
+    var result = await db.update(
+        TRANSACTION_TABLE, transaction.toMap(), where: '$ID',
+        whereArgs: [transaction.tId]);
 
     return result;
   }
@@ -93,15 +96,27 @@ class DatabaseProvider {
   Future<int> deleteFromDB(int id) async {
     Database db = await this.database;
 
-    var result = await db.rawDelete('DELETE FROM $TRANSACTION_TABLE WHERE $ID = $id');
+    var result = await db.rawDelete(
+        'DELETE FROM $TRANSACTION_TABLE WHERE $ID = $id');
 
     return result;
   }
 
-  //Database Creation Function
+  Future<List<Transactions>> getTransactionList() async {
+    var TtransactionMapList = await getTransactionMapList();
+    int cnt = TtransactionMapList.length;
 
+    List<Transactions> list = List<Transactions>();
 
+    for(int i = cnt - 1;i>=0;i--){
+      list.add(Transactions.fromMapObject(TtransactionMapList[i]));
+    }
 
+    return list;
+
+  }
+
+//Get list of Transaction Objects
 
 
 }
