@@ -16,29 +16,37 @@ import 'package:mypocket/database/Database_provider.dart';
 
 class AddTransaction extends StatefulWidget {
 
+  final String appBarTitle;
+  final Transactions transactions;
 
+
+  AddTransaction( this.transactions, this.appBarTitle);
 
   @override
-  _AddTransactionState createState() => _AddTransactionState();
+  _AddTransactionState createState() => _AddTransactionState(this.transactions, this.appBarTitle);
 }
 
 class _AddTransactionState extends State<AddTransaction> {
 
   //variable for radio button
+  Transactions transaction;
+  String appBarTitle;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   int  selectedButton = -1;
 
-  Transactions transaction = Transactions(100, 0, "ejn","");
+  //Transactions transaction = Transactions(100, 0, "ejn","");
   DatabaseProvider provider = DatabaseProvider();
+
+  _AddTransactionState(this.transaction, this.appBarTitle);
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Transaction'),
+        title: Text(appBarTitle),
       ),
       backgroundColor: Colors.white,
 
@@ -222,9 +230,14 @@ class _AddTransactionState extends State<AddTransaction> {
     //_showAlertDialog(transaction.title.runtimeType.toString() + transaction.amount.runtimeType.toString(), transaction.inout.runtimeType.toString());
     print("before" );
     int result = 0;
-    if(transaction.tId == null){
+    print(transaction.tid);
+    if(transaction.tid == null){
       print("null tid");
       result = await provider.InsertIntoDB(transaction);
+    }
+    else{
+      print("Update called");
+      result = await provider.updateDB(transaction);
     }
 
     int cp = await provider.getCount();

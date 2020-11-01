@@ -9,6 +9,7 @@ class _allTranactionPageState extends State<allTranactionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('All Transactions'),
         backgroundColor: Colors.blue[800],

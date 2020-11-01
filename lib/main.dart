@@ -1,5 +1,6 @@
 
 
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:mypocket/Pages/home_page.dart';
 import 'package:mypocket/Pages/add_transaction.dart';
@@ -8,9 +9,7 @@ import 'Pages/profile_page.dart';
 void main() {
   runApp(MaterialApp(
     home: HomePage(),
-    routes: {
-      '/add_transaction_page' :(context) => AddTransaction()
-    },
+
   ));
 }
 class HomePage extends StatefulWidget {
@@ -43,27 +42,60 @@ class _HomePageState extends State<HomePage> {
       ),
 
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: curr_press,
+      bottomNavigationBar: CurvedNavigationBar(
+        index: curr_press,
+        color: Colors.blue[400],
+        backgroundColor: Colors.white,
+        buttonBackgroundColor: Colors.transparent,
+        height: 74,
+
+        animationDuration: Duration(milliseconds: 400),
+        animationCurve: Curves.easeInOutBack,
+
 
         items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              backgroundColor: Colors.red[300],
-              title: Text('Home')
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Container(
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(Icons.home),
+                    Text("Home")
 
+                  ],
+                ),
+              ),
+            ),
           ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              title: Text('All Transactions'),
-              backgroundColor: Colors.greenAccent[300]
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Container(
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(Icons.book),
+                    Text("All")
 
+                  ],
+                ),
+              ),
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_rounded),
-            title: Text('My Account'),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Container(
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(Icons.person),
+                    Text("Profile")
 
-          )
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
         onTap: (index){
           setState(() {

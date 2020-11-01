@@ -13,7 +13,7 @@ class Transactions{
   String _title;
 
   Transactions(this._amount, this._inout, //this._datetime,
-      this._title,this._datetime ,[this._tid]);
+      this._title,this._datetime);
 
   Transactions.withId(this._tid, this._amount,this._datetime, this._inout, //this._datetime,
       this._title);
@@ -42,9 +42,9 @@ class Transactions{
     _amount = value;
   }
 
-  int get tId => _tid;
+  int get tid => _tid;
 
-  set tId(int value) {
+  set tid(int value) {
     _tid = value;
   }
 

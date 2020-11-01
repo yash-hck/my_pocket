@@ -64,7 +64,7 @@ class DatabaseProvider {
 
   Future<int> InsertIntoDB(Transactions transaction) async {
     Database db = await this.database;
-    print(transaction.tId);
+    print(transaction.tid);
     //db.insert(TRANSACTION_TABLE, tf.toMap());
     var result = await db.insert(TRANSACTION_TABLE, transaction.toMap());
 
@@ -82,12 +82,15 @@ class DatabaseProvider {
   //Update Operation
 
   Future<int> updateDB(Transactions transaction) async {
+    print("got database");
     Database db = await this.database;
-
+    print("got database");
+    Map<String , dynamic> mp = transaction.toMap();
+    print(mp.length);
     var result = await db.update(
-        TRANSACTION_TABLE, transaction.toMap(), where: '$ID',
-        whereArgs: [transaction.tId]);
-
+        TRANSACTION_TABLE, transaction.toMap(), where: '$ID = ?',
+        whereArgs: [transaction.tid]);
+    print("got result" + result.toString());
     return result;
   }
 

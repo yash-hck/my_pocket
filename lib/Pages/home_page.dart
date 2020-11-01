@@ -1,4 +1,5 @@
 import 'dart:async';
+//import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:mypocket/Pages/all_transaction.dart';
@@ -22,12 +23,45 @@ class _HomeState extends State<Home> {
   int count = 0;
   DatabaseProvider provider = DatabaseProvider();
 
+  Future navigatetoPage(Transactions transactions, String operation) async{
+    print(transactions);
+    bool result;
+    if(operation == 'Update'){
+      result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTransaction(transactions, operation)));
+    }
+    else {
+      result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTransaction(transactions, operation)));
+    }
+
+
+    if(result == true){
+      updateListView();
+    }
+  }
+
 
 
   Widget buildbody(BuildContext ctxt , int index){
     return Dismissible (
       key: UniqueKey(),
-      background: Container(color : Colors.red),
+      background: Container(
+
+        child: Card(
+          color: Colors.redAccent,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
+          ),
+          child: Row(
+            children: [
+              SizedBox(width: 300),
+               Icon(Icons.delete,
+               size: 40,
+               color: Colors.white,)
+            ],
+          ),
+        ),
+
+      ),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
 
@@ -42,7 +76,7 @@ class _HomeState extends State<Home> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15)
           ),
-          elevation: 7,
+
           child: Column(
             children: [
               Padding(
@@ -59,8 +93,10 @@ class _HomeState extends State<Home> {
                     ),
                     Spacer(),
                     IconButton(
-                      icon: Icon(Icons.info_outline),
-                      onPressed: () {},
+                      icon: Icon(Icons.edit_outlined),
+                      onPressed: () {
+                        navigatetoPage(list[index], 'Update');
+                      },
 
                     )
 
@@ -74,13 +110,13 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Icon (
-                      (list[index].inout == 0) ? Icons.arrow_upward : Icons.arrow_downward,
-                      color: (list[index].inout == 0) ? Colors.green : Colors.red,
+                      (list[index].inout == 1) ? Icons.arrow_upward : Icons.arrow_downward,
+                      color: (list[index].inout == 1) ? Colors.green : Colors.red,
                     ),
                     Text(
                       "\$${list[index].amount.toString()}",
                       style: TextStyle(
-                          color: (list[index].inout == 0)? Colors.green : Colors.red,
+                          color: (list[index].inout == 1)? Colors.green : Colors.red,
                           fontSize: 25
                       ),
                     ),
@@ -116,32 +152,35 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
-    Future navigatetoPage(context) async{
-      bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTransaction()));
 
-      if(result == true){
-        updateListView();
-      }
-    }
-    //updateListView();
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Home'),
         backgroundColor: Colors.blue[300],
       ),
       body: ListView.builder(
         itemCount: count,
+
         itemBuilder: (BuildContext ctxt, int index) => buildbody(ctxt, index),
 
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: (){
-          navigatetoPage(context);
+          navigatetoPage(Transactions(0, 0, '', ''), 'Add Transaction');
+
         },
           
         label: Text('+ Add Transaction'),
     ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    updateListView();
   }
 
   void updateListView() {
@@ -163,7 +202,7 @@ class _HomeState extends State<Home> {
 
   void deleteT(Transactions transactions) async{
 
-    int delete = await provider.deleteFromDB(transactions.tId);
+    int delete = await provider.deleteFromDB(transactions.tid);
 
 
 
