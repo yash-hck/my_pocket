@@ -40,7 +40,24 @@ class _AddTransactionState extends State<AddTransaction> {
   //Transactions transaction = Transactions(100, 0, "ejn","");
   DatabaseProvider provider = DatabaseProvider();
 
+
   _AddTransactionState(this.transaction, this.appBarTitle);
+
+
+  @override
+  void initState() {
+    super.initState();
+    if(transaction.tid!= null){
+      titleController.text = transaction.title;
+      amountController.text = transaction.amount.toString();
+      dateController.text = transaction.datetime;
+
+      if(transaction.inout == 0)selectedButton = 0;
+      else selectedButton = 1;
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -79,6 +96,7 @@ class _AddTransactionState extends State<AddTransaction> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+
                   onChanged: (value) {
                   updateTitle();
                 },
@@ -111,6 +129,7 @@ class _AddTransactionState extends State<AddTransaction> {
               Container(
                 padding: EdgeInsets.all(25),
                 child: TextFormField(
+                  controller: dateController,
 
                   onChanged: (value) {
                     //_showAlertDialog("ld", "dj");

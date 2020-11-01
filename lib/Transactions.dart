@@ -24,7 +24,7 @@ class Transactions{
     _title = value;
   }
 
-  String get dateTime => _datetime;
+  String get datetime => _datetime;
 
   set datetime(String value) {
     _datetime = value;

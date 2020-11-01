@@ -134,7 +134,7 @@ class _HomeState extends State<Home> {
 
                   children: [
                     Text(
-                      list[index].dateTime,
+                      list[index].datetime,
 
                     )
                   ],
@@ -161,7 +161,7 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.blue[300],
       ),
       body: ListView.builder(
-        itemCount: count,
+        itemCount: count < 5 ? count : 5,
 
         itemBuilder: (BuildContext ctxt, int index) => buildbody(ctxt, index),
 
