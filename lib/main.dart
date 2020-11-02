@@ -20,7 +20,7 @@ void main() async{
   print(email);
   runApp(MaterialApp(
 
-    home: email == null ? LoginRegisterPage() : AllTabs()
+    home: email == null ? LoginRegisterPage() : AllTabs(email)
 
   ));
 }

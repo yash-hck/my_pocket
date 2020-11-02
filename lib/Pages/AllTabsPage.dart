@@ -8,12 +8,23 @@ import 'all_transaction.dart';
 import 'home_page.dart';
 
 class AllTabs extends StatefulWidget {
+
+  final String NAME;
+
+
+  AllTabs(this.NAME);
+
   @override
-  _AllTabsState createState() => _AllTabsState();
+  _AllTabsState createState() => _AllTabsState(this.NAME);
 }
 
 class _AllTabsState extends State<AllTabs> {
-  @override
+
+  String NAME;
+
+  _AllTabsState(this.NAME);
+
+
   int curr_press = 0;
 
   PageController _pageController = PageController();
@@ -25,7 +36,7 @@ class _AllTabsState extends State<AllTabs> {
 
 
 
-
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(

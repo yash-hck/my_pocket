@@ -28,8 +28,11 @@ class AddTransaction extends StatefulWidget {
 
 class _AddTransactionState extends State<AddTransaction> {
 
+  final _formKey = GlobalKey<FormState>();
+
   //variable for radio button
   Transactions transaction;
+
   String appBarTitle;
 
   TextEditingController titleController = TextEditingController();
@@ -70,155 +73,165 @@ class _AddTransactionState extends State<AddTransaction> {
       //Body of the form
 
       body: SingleChildScrollView(  //To make page scrollable
-        child: new Center(//Center the form
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch, //make form to take the whole width of screen
+        child: Form(
+          key: _formKey,
+          child: new Center(//Center the form
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch, //make form to take the whole width of screen
 
-            children: <Widget>[
+              children: <Widget>[
 
-              Container(
-                margin: EdgeInsets.only(top: 20),
-                padding: EdgeInsets.fromLTRB(25, 10, 25, 0),
-                child: TextFormField(
-                  controller: titleController,
+                Container(
+                  margin: EdgeInsets.only(top: 20),
+                  padding: EdgeInsets.fromLTRB(25, 10, 25, 0),
+                  child: TextFormField(
+                    controller: titleController,
+                    validator: (text){
+                      print('text ' + text);
+                      if(text == null || text.isEmpty){
+                        return 'Title can not be empty';
+                      }
+                      return null;
 
-                  decoration: new InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    labelText: "Title",
-
-                    hintText: 'Enter Title',
-                    hintStyle: TextStyle(
-                      fontWeight: FontWeight.w200,
-                      fontSize: 15
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-
-                  onChanged: (value) {
-                  updateTitle();
-                },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(25, 10, 25, 0),
-                child: TextFormField(
-                  onChanged: (value) {
-                    updateAmount();
-                  },
-                  controller: amountController,
-                  keyboardType: TextInputType.number,
-                  style: TextStyle(
-                    fontSize: 25
-                  ),
-                  decoration: new InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    labelText: "Amount",
-
-                    border: OutlineInputBorder(
-
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(25),
-                child: TextFormField(
-                  controller: dateController,
-
-                  onChanged: (value) {
-                    //_showAlertDialog("ld", "dj");
-                    updateDate();
-                  },
-
-                  decoration: new InputDecoration(
+                    },
+                    decoration: new InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      labelText: "Date",
+                      labelText: "Title",
+
+                      hintText: 'Enter Title',
+                      hintStyle: TextStyle(
+                        fontWeight: FontWeight.w200,
+                        fontSize: 15
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                      )),
-                ),
-              ),
-              //SizedBox(height: 20.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                      ),
+                    ),
 
-                  Radio(
-                    value: 0,
-                    groupValue: selectedButton,
-                    activeColor: Colors.green,
                     onChanged: (value) {
-                      //transaction.inOut = true;
-                      setState(() {
-                        selectedButton = value;
-
-                        //transaction.inOut = (value == 0)?false : true;
-                      });
-                    },
+                    updateTitle();
+                  },
                   ),
-                  Text(
-                    'Income',
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(25, 10, 25, 0),
+                  child: TextFormField(
+                    onChanged: (value) {
+                      updateAmount();
+                    },
+                    controller: amountController,
+                    keyboardType: TextInputType.number,
                     style: TextStyle(
+                      fontSize: 25
+                    ),
+                    decoration: new InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelText: "Amount",
+
+                      border: OutlineInputBorder(
+
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(25),
+                  child: TextFormField(
+                    controller: dateController,
+
+                    onChanged: (value) {
+                      //_showAlertDialog("ld", "dj");
+                      updateDate();
+                    },
+
+                    decoration: new InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelText: "Date",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        )),
+                  ),
+                ),
+                //SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    Radio(
+                      value: 0,
+                      groupValue: selectedButton,
+                      activeColor: Colors.green,
+                      onChanged: (value) {
+                        //transaction.inOut = true;
+                        setState(() {
+                          selectedButton = value;
+
+                          //transaction.inOut = (value == 0)?false : true;
+                        });
+                      },
+                    ),
+                    Text(
+                      'Income',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    SizedBox(width: 40),
+                    Radio(
+                      value: 1,
+                      activeColor: Colors.green,
+                      groupValue: selectedButton,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedButton = value;
+
+                          //transaction.inOut = (value == 0)?false : true;
+                        });
+                      },
+                    ),
+                    Text(
+                        'Expense',
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 40),
-                  Radio(
-                    value: 1,
-                    activeColor: Colors.green,
-                    groupValue: selectedButton,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedButton = value;
+                  ],
+                ),
 
-                        //transaction.inOut = (value == 0)?false : true;
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20,0),
+                  child: MaterialButton(
+                    height: 58,
+                    //minWidth: 340,
+
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(25)),
+                    onPressed: () {
+                      setState(() {
+                        //debugPrint("Successfully saved");
+                        _save();
                       });
                     },
-                  ),
-                  Text(
-                      'Expense',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
+                    child: Text(
+                      "Save",
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                      ),
                     ),
+                    color: Colors.lightBlue,
                   ),
-                ],
-              ),
-
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 5, 20,0),
-                child: MaterialButton(
-                  height: 58,
-                  //minWidth: 340,
-
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(25)),
-                  onPressed: () {
-                    setState(() {
-                      //debugPrint("Successfully saved");
-                      _save();
-                    });
-                  },
-                  child: Text(
-                    "Save",
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.white,
-                    ),
-                  ),
-                  color: Colors.lightBlue,
                 ),
-              ),
 
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -226,11 +239,11 @@ class _AddTransactionState extends State<AddTransaction> {
 
 
   }
-
+  // Function To Update Title
   void updateTitle() {
     transaction.title = titleController.text;
   }
-
+  // Function To Update Amount
   void updateAmount() {
     transaction.amount = int.parse(amountController.text);
 
@@ -241,35 +254,44 @@ class _AddTransactionState extends State<AddTransaction> {
   }
 
   void _save() async {
-    transaction.datetime = DateFormat.yMMMd().format(DateTime.now());
+    if(_formKey.currentState.validate()){
+      transaction.datetime = DateFormat.yMMMd().format(DateTime.now());
 
-    if(selectedButton == 1)transaction.inout = 0;
-    else transaction.inout = 1;
+      if(selectedButton == 1)transaction.inout = 0;
+      else transaction.inout = 1;
 
-    //_showAlertDialog(transaction.title.runtimeType.toString() + transaction.amount.runtimeType.toString(), transaction.inout.runtimeType.toString());
-    print("before" );
-    int result = 0;
-    print(transaction.tid);
-    if(transaction.tid == null){
-      print("null tid");
-      result = await provider.InsertIntoDB(transaction);
+      //_showAlertDialog(transaction.title.runtimeType.toString() + transaction.amount.runtimeType.toString(), transaction.inout.runtimeType.toString());
+      print("before" );
+      int result = 0;
+      print(transaction.tid);
+      if(transaction.tid == null){
+        print("null tid");
+        result = await provider.InsertIntoDB(transaction);
+      }
+      else{
+        print("Update called");
+        result = await provider.updateDB(transaction);
+      }
+
+      int cp = await provider.getCount();
+
+
+
+
+
+
+      print("after " + cp.toString());
+      if(result!=0){
+        //_showAlertDialog("success", "ine");
+        Navigator.pop(context, true);
+      }
+      else _showAlertDialog("fail", "NO");
+
+      //_showAlertDialog("j3j", "irhj");
+
     }
-    else{
-      print("Update called");
-      result = await provider.updateDB(transaction);
-    }
-
-    int cp = await provider.getCount();
 
 
-    print("after " + cp.toString());
-    if(result!=0){
-      //_showAlertDialog("success", "ine");
-      Navigator.pop(context, true);
-    }
-    else _showAlertDialog("fail", "NO");
-
-    //_showAlertDialog("j3j", "irhj");
   }
 
   void _showAlertDialog(String title, String message) {

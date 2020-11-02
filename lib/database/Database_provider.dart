@@ -1,4 +1,5 @@
 import 'dart:async';
+
 //import 'dart:html';
 
 
@@ -119,7 +120,36 @@ class DatabaseProvider {
 
   }
 
-//Get list of Transaction Objects
+  Future<int> getAllIncome() async {
+    Database db = await this.database;
+
+    var result = await db.rawQuery('SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $INOUT = 1');
+
+    return result[0]['SUM(amount)'];
+
+  }
+
+  //Function to get all Expanse
+
+  Future<int> getAllExpense() async {
+    Database db = await this.database;
+
+    var result = await db.rawQuery('SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $INOUT = 0');
+
+    return result[0]['SUM(amount)'];
+
+  }
+
+//Function To get Final amount
+  Future<int> getTotal() async {
+    Database db = await this.database;
+
+    var income = await getAllIncome();
+    var expense = await getAllExpense();
+
+    return income - expense;
+
+  }
 
 
 }

@@ -8,11 +8,19 @@ import 'package:mypocket/Pages/home_page.dart';
 import 'BottomWaveChipper.dart';
 
 class LoginRegisterPage extends StatefulWidget {
+
+
+
+
   @override
   _LoginRegisterPageState createState() => _LoginRegisterPageState();
+
+
 }
 
 class _LoginRegisterPageState extends State<LoginRegisterPage> {
+
+
 
   final GlobalKey<ScaffoldState> _scaffoldstate = new GlobalKey<ScaffoldState>();
   TextEditingController _emailController = new TextEditingController();
@@ -149,15 +157,14 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
               fontWeight: FontWeight.bold, color: textColor, fontSize: 20),
         ),
         onPressed: () async {
-          print("onPressed");
+
           function();
-          SharedPreferences preferences = await SharedPreferences.getInstance();
-          preferences.setString('email', _email);
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllTabs()));
+
+          //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllTabs('New User')));
         },
       );
     }
-
+    //Button which will add name to shared preference
     Widget _sharedbutton(String text, Color splashColor, Color highlightColor,
         Color fillColor, Color textColor, void function()) {
       return RaisedButton(
@@ -177,8 +184,8 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
           print("onPressed");
           function();
           SharedPreferences preferences = await SharedPreferences.getInstance();
-          preferences.setString('email', _emailController.text);
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllTabs()));
+          preferences.setString('email', _displayName);
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllTabs(_displayName)));
         },
       );
     }
@@ -294,10 +301,29 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                               right: 20,
                               bottom: MediaQuery.of(context).viewInsets.bottom),
                           child: Container(
-                            child: _button("LOGIN", Colors.white, primary,
+                            child:RaisedButton(
+                              highlightElevation: 0.0,
+                              splashColor:  Colors.white,
+                              highlightColor: primary,
+                              elevation: 0.0,
+                              color: primary,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(30.0)),
+                              child: Text(
+                                "LOGIN",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+                              ),
+                              onPressed: () async {
+
+                                _loginUser();
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllTabs('New User')));
+                              },
+                            )
+                            /* _button("LOGIN", Colors.white, primary,
                                 primary, Colors.white, _loginUser),
                             height: 50,
-                            width: MediaQuery.of(context).size.width,
+                            width: MediaQuery.of(context).size.width,*/
                           ),
                         ),
                         SizedBox(
