@@ -157,15 +157,41 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text(
+          'Home',
+
+        ),
         backgroundColor: Colors.blue[300],
       ),
-      body: ListView.builder(
-        itemCount: count < 5 ? count : 5,
+      body:Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Recents->',
 
-        itemBuilder: (BuildContext ctxt, int index) => buildbody(ctxt, index),
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey
 
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: count < 5 ? count : 5,
+
+              itemBuilder: (BuildContext ctxt, int index) => buildbody(ctxt, index),
+
+            ),
+          )
+        ],
       ),
+
+
+
       floatingActionButton: FloatingActionButton.extended(
         onPressed: (){
           navigatetoPage(Transactions(0, 0, '', ''), 'Add Transaction');

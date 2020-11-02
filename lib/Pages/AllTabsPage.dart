@@ -43,7 +43,7 @@ class _AllTabsState extends State<AllTabs> {
         buttonBackgroundColor: Colors.transparent,
         height: 74,
 
-        animationDuration: Duration(milliseconds: 400),
+        animationDuration: Duration(milliseconds: 500),
         animationCurve: Curves.easeInOutBack,
 
 
