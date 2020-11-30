@@ -1,6 +1,7 @@
 
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mypocket/Pages/AllTabsPage.dart';
 import 'package:mypocket/Pages/LoginRegisterPage.dart';
@@ -10,9 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'Pages/all_transaction.dart';
 import 'Pages/profile_page.dart';
 void main() async{
+
+
   print("app start");
   WidgetsFlutterBinding.ensureInitialized();
   print('en');
+  await Firebase.initializeApp();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   print ('ndj');
   var email = preferences.getString('email');

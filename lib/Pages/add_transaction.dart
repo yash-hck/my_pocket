@@ -29,7 +29,7 @@ class AddTransaction extends StatefulWidget {
 class _AddTransactionState extends State<AddTransaction> {
 
   final _formKey = GlobalKey<FormState>();
-
+  DateTime selectedDate = DateTime.now();
   //variable for radio button
   Transactions transaction;
 
@@ -50,6 +50,7 @@ class _AddTransactionState extends State<AddTransaction> {
   @override
   void initState() {
     super.initState();
+    dateController.text = 'Today';
     if(transaction.tid!= null){
       titleController.text = transaction.title;
       amountController.text = transaction.amount.toString();
@@ -98,14 +99,21 @@ class _AddTransactionState extends State<AddTransaction> {
                       filled: true,
                       fillColor: Colors.white,
                       labelText: "Title",
+                      labelStyle: TextStyle(
+                        fontSize: 25
+                      ),
 
                       hintText: 'Enter Title',
                       hintStyle: TextStyle(
                         fontWeight: FontWeight.w200,
-                        fontSize: 15
+                        fontSize: 25
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 3,
+                        ),
                       ),
                     ),
 
@@ -130,9 +138,15 @@ class _AddTransactionState extends State<AddTransaction> {
                       fillColor: Colors.white,
                       labelText: "Amount",
 
+
                       border: OutlineInputBorder(
 
                         borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 3,
+                        ),
+
                       ),
                     ),
 
@@ -141,19 +155,25 @@ class _AddTransactionState extends State<AddTransaction> {
                 Container(
                   padding: EdgeInsets.all(25),
                   child: TextFormField(
-                    controller: dateController,
 
-                    onChanged: (value) {
-                      //_showAlertDialog("ld", "dj");
-                      updateDate();
+                    controller: dateController,
+                    readOnly: true,
+
+                    onTap: (){
+                      _selectDate(context);
                     },
 
                     decoration: new InputDecoration(
                         filled: true,
+                        suffixIcon: Icon(Icons.calendar_today_rounded),
                         fillColor: Colors.white,
                         labelText: "Date",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).primaryColor,
+                            width: 3,
+                          ),
                         )),
                   ),
                 ),
@@ -255,7 +275,13 @@ class _AddTransactionState extends State<AddTransaction> {
 
   void _save() async {
     if(_formKey.currentState.validate()){
-      transaction.datetime = DateFormat.yMMMd().format(DateTime.now());
+      if(dateController.text == 'Today'){
+        transaction.datetime = DateFormat.yMMMd().format(DateTime.now());
+      }
+      else{
+        transaction.datetime = DateFormat.yMMMd().format(selectedDate);
+      }
+
 
       if(selectedButton == 1)transaction.inout = 0;
       else transaction.inout = 1;
@@ -311,5 +337,25 @@ class _AddTransactionState extends State<AddTransaction> {
     DateFormat formatter = DateFormat('yyyy-MM-dd');
     String formatted = formatter. format(now);
     return formatted;
+  }
+
+  void _selectDate(BuildContext context)async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate, // Refer step 1
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2025),
+      selectableDayPredicate: _decideWhichDayToEnable,
+    );
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+        dateController.text = DateFormat.yMMMd().format(selectedDate);
+      });
+  }
+
+  bool _decideWhichDayToEnable(DateTime day) {
+    if(day.isAfter(DateTime.now()))return false;
+    return true;
   }
 }

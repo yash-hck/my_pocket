@@ -1,6 +1,8 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mypocket/Pages/AllTabsPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mypocket/Pages/home_page.dart';
@@ -21,7 +23,8 @@ class LoginRegisterPage extends StatefulWidget {
 class _LoginRegisterPageState extends State<LoginRegisterPage> {
 
 
-
+  FirebaseAuth auth = FirebaseAuth.instance;
+  final GlobalKey<FormState> _formkey = new GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldstate = new GlobalKey<ScaffoldState>();
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _nameController = new TextEditingController();
@@ -106,13 +109,22 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
         bool obsecure) {
       return Container(
         padding: EdgeInsets.only(left: 20, right: 20),
-        child: TextField(
+        child: TextFormField(
           controller: controller,
           obscureText: obsecure,
+          validator: (text){
+            print('text ' + text);
+            if(text == null || text.isEmpty){
+              return 'Title can not be empty';
+            }
+            return null;
+
+          },
           style: TextStyle(
             fontSize: 20,
           ),
           decoration: InputDecoration(
+
               hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               hintText: hint,
               enabledBorder: OutlineInputBorder(
@@ -141,6 +153,8 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     }
 
     //button widget
+
+    //Button which will add name to shared preference
     Widget _button(String text, Color splashColor, Color highlightColor,
         Color fillColor, Color textColor, void function()) {
       return RaisedButton(
@@ -157,35 +171,20 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
               fontWeight: FontWeight.bold, color: textColor, fontSize: 20),
         ),
         onPressed: () async {
-
-          function();
-
-          //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllTabs('New User')));
-        },
-      );
-    }
-    //Button which will add name to shared preference
-    Widget _sharedbutton(String text, Color splashColor, Color highlightColor,
-        Color fillColor, Color textColor, void function()) {
-      return RaisedButton(
-        highlightElevation: 0.0,
-        splashColor: splashColor,
-        highlightColor: highlightColor,
-        elevation: 0.0,
-        color: fillColor,
-        shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(30.0)),
-        child: Text(
-          text,
-          style: TextStyle(
-              fontWeight: FontWeight.bold, color: textColor, fontSize: 20),
-        ),
-        onPressed: () async {
           print("onPressed");
+
           function();
-          SharedPreferences preferences = await SharedPreferences.getInstance();
-          preferences.setString('email', _displayName);
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllTabs(_displayName)));
+          if(text == 'REGISTER'){
+            String result = await HandleSignUp();
+            if(result == 'Success'){
+              SharedPreferences preferences = await SharedPreferences.getInstance();
+              preferences.setString('email', _displayName);
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllTabs(_displayName)));
+            }
+
+          }
+
+
         },
       );
     }
@@ -317,7 +316,15 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                               onPressed: () async {
 
                                 _loginUser();
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllTabs('New User')));
+                                String result = await HandleLogin();
+                                if(result == 'Success'){
+                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllTabs('New User')));
+
+                                }
+                                else {
+                                  _emailController.clear();
+                                }
+
                               },
                             )
                             /* _button("LOGIN", Colors.white, primary,
@@ -443,14 +450,15 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                       Padding(
                         padding: EdgeInsets.only(
                           bottom: 20,
+
                         ),
-                        child: _input(Icon(Icons.email), "EMAIL",
-                            _emailController, false),
+                        child: _input(Icon(Icons.email), "EMAIL", _emailController, false)
                       ),
                       Padding(
                         padding: EdgeInsets.only(bottom: 20),
                         child: _input(Icon(Icons.lock), "PASSWORD",
-                            _passwordController, true),
+                            _passwordController, true,
+                          ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(
@@ -458,7 +466,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                             right: 20,
                             bottom: MediaQuery.of(context).viewInsets.bottom),
                         child: Container(
-                          child: _sharedbutton("REGISTER", Colors.white, primary,
+                          child: _button("REGISTER", Colors.white, primary,
                               primary, Colors.white, _registerUser),
                           height: 50,
                           width: MediaQuery.of(context).size.width,
@@ -538,5 +546,29 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
           ],
           crossAxisAlignment: CrossAxisAlignment.stretch,
         ));
+  }
+
+  Future<String> HandleSignUp() async{
+    try{
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password);
+    }
+    on FirebaseAuthException catch(e){
+      print("failed");
+      print(e.toString());
+      return e.toString();
+    }
+    return 'Success';
+  }
+
+  Future<String> HandleLogin() async {
+    try{
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
+    }
+    on FirebaseAuthException catch (e){
+      print("failed");
+      print(e.toString());
+      return e.toString();
+    }
+    return 'Success';
   }
 }

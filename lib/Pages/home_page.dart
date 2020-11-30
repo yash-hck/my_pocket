@@ -1,8 +1,10 @@
 import 'dart:async';
 //import 'dart:html';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:flutter/material.dart';
 import 'package:mypocket/Pages/all_transaction.dart';
+import 'package:mypocket/Pages/amountPerDay.dart';
 import 'package:mypocket/Pages/profile_page.dart';
 import 'package:mypocket/Pages/add_transaction.dart';
 import 'package:mypocket/database/Database_provider.dart';
@@ -21,6 +23,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<Transactions> list;
   int count = 0;
+
+
   DatabaseProvider provider = DatabaseProvider();
 
   Future navigatetoPage(Transactions transactions, String operation) async{
@@ -151,7 +155,35 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    //var datam = provider.getlastDays();
+    var datam = [
+      amountPerDay(2016, 'nov', Colors.red),
+      amountPerDay(2017, 'dec', Colors.yellow),
+      amountPerDay(2018, 'jan', Colors.green),
+    ];
 
+    var series = [
+      new charts.Series(
+        id: 'Clicks',
+        domainFn: (amountPerDay clickData, _) => clickData.day,
+        measureFn: (amountPerDay clickData, _) => clickData.amount,
+        colorFn: (amountPerDay clickData, _) => clickData.color,
+        data: datam,
+      ),
+    ];
+
+    var chart = charts.BarChart(
+      series,
+      animate: true,
+    );
+
+    var chartWidget = Padding(
+      padding: EdgeInsets.all(32.0),
+      child: SizedBox(
+        height: 200.0,
+        child: chart,
+      ),
+    );
 
 
     return Scaffold(
@@ -164,8 +196,12 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.blue[300],
       ),
       body:Column(
+
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            child: chartWidget,
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
