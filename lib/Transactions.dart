@@ -1,7 +1,7 @@
 // ignore: camel_case_types
 
 
-
+import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +9,7 @@ class Transactions{
   int _tid;
   int _amount;
   int _inout;
-  String _datetime;
+  DateTime _datetime;
   String _title;
 
   Transactions(this._amount, this._inout, //this._datetime,
@@ -24,9 +24,9 @@ class Transactions{
     _title = value;
   }
 
-  String get datetime => _datetime;
+  DateTime get datetime => _datetime;
 
-  set datetime(String value) {
+  set datetime(DateTime value) {
     _datetime = value;
   }
 
@@ -48,26 +48,30 @@ class Transactions{
     _tid = value;
   }
 
-  Map<String, dynamic> toMap(){
-    var map = Map<String, dynamic>();
-    if(_tid != null)
-      map['tid'] = _tid;
-
-
-    map['title'] = _title;
-    map['amount'] = _amount;
-    map['inout'] = _inout;
-    map['datetime'] = _datetime;
-    return map;
-  }
+  Map<String, dynamic> toMap() => {
+    "tid": tid,
+    "title": title,
+    "datetime": datetime.toIso8601String(),
+    "inout": inout,
+    "amount": amount,
+  };
 
   Transactions.fromMapObject (Map<String, dynamic> map) {
     this._tid  = map['tid'];
     this._title = map['title'];
     this._amount = map['amount'];
     this._inout = map['inout'];
-    this._datetime = map['datetime'];
+
+    this._datetime = DateTime.parse(map['datetime']);
+    print('p '+ this.datetime.toString());
   }
+  /*Transactions.fromMapObject(Map<String, dynamic> json) => Transactions(
+    tid: json["tid"],
+    title: json["title"],
+    datetime: DateTime.parse(json["datetime"]),
+    inout: json["inout"],
+    amount: json["amount"],
+  );*/
 
 
 }

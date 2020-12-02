@@ -1,8 +1,10 @@
 import 'dart:async';
+
 //import 'dart:html';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mypocket/Pages/all_transaction.dart';
 import 'package:mypocket/Pages/amountPerDay.dart';
 import 'package:mypocket/Pages/profile_page.dart';
@@ -138,7 +140,8 @@ class _HomeState extends State<Home> {
 
                   children: [
                     Text(
-                      list[index].datetime,
+                      //list[index].datetime,
+                        DateFormat.yMMMd().format(list[index].datetime),
 
                     )
                   ],
@@ -229,8 +232,14 @@ class _HomeState extends State<Home> {
 
 
       floatingActionButton: FloatingActionButton.extended(
+
         onPressed: (){
-          navigatetoPage(Transactions(0, 0, '', ''), 'Add Transaction');
+          final now = DateTime.now();
+          navigatetoPage(Transactions(0, 0, '', DateTime(
+              now.year,
+              now.month,
+              now.day,
+              )), 'Add Transaction');
 
         },
           

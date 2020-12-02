@@ -47,7 +47,7 @@ class DatabaseProvider {
         onCreate: (_databaseProvider, version) async {
           print("database created");
           await _databaseProvider.execute(
-              'CREATE TABLE $TRANSACTION_TABLE ($ID INTEGER PRIMARY KEY AUTOINCREMENT, $TITLE TEXT,  $AMOUNT NUMBER, $INOUT NUMBER, $DATE TEXT)');
+              'CREATE TABLE $TRANSACTION_TABLE ($ID INTEGER PRIMARY KEY AUTOINCREMENT, $TITLE TEXT,  $AMOUNT NUMBER, $INOUT NUMBER, $DATE DATETIME)');
         }
     );
   }
@@ -134,6 +134,7 @@ class DatabaseProvider {
   Future<int> getAllExpense() async {
     Database db = await this.database;
 
+
     var result = await db.rawQuery('SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $INOUT = 0');
 
     return result[0]['SUM(amount)'];
@@ -142,7 +143,6 @@ class DatabaseProvider {
 
 //Function To get Final amount
   Future<int> getTotal() async {
-    Database db = await this.database;
 
     var income = await getAllIncome();
     var expense = await getAllExpense();
@@ -151,6 +151,20 @@ class DatabaseProvider {
 
   }
 
+  Future<List<Transactions>> getlastDays() async {
+    Database db = await this.database;
+    List<Map<String, dynamic>> result = await db.rawQuery("SELECT * FROM $TRANSACTION_TABLE WHERE $DATE < date('now','7 days')");
+    int cnt = result.length;
+    print(result.runtimeType);
+    List<Transactions> list = List<Transactions>();
+
+    for(int i = cnt - 1;i>=0;i--){
+      list.add(Transactions.fromMapObject(result[i]));
+    }
+    print('here' + cnt.toString());
+    return list;
+
+  }
 
 
 

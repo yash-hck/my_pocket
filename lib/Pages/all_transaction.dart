@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mypocket/database/Database_provider.dart';
 
 import '../Transactions.dart';
@@ -117,7 +118,7 @@ class _allTranactionPageState extends State<allTranactionPage> {
 
                       children: [
                         Text(
-                          list[index].datetime,
+                            DateFormat.yMMMd().format(list[index].datetime)
 
                         )
                       ],

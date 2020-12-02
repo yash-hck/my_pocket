@@ -4,6 +4,8 @@
 
 //import 'dart:html';
 
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mypocket/Transactions.dart';
@@ -54,7 +56,8 @@ class _AddTransactionState extends State<AddTransaction> {
     if(transaction.tid!= null){
       titleController.text = transaction.title;
       amountController.text = transaction.amount.toString();
-      dateController.text = transaction.datetime;
+      String date = DateFormat.yMMMd().format(transaction.datetime);
+      dateController.text = date;
 
       if(transaction.inout == 0)selectedButton = 0;
       else selectedButton = 1;
@@ -274,12 +277,13 @@ class _AddTransactionState extends State<AddTransaction> {
   }
 
   void _save() async {
+    DateTime now = DateTime.now();
     if(_formKey.currentState.validate()){
       if(dateController.text == 'Today'){
-        transaction.datetime = DateFormat.yMMMd().format(DateTime.now());
+        transaction.datetime = DateTime.parse(DateFormat('yyyy-MM-dd'). format(now));
       }
       else{
-        transaction.datetime = DateFormat.yMMMd().format(selectedDate);
+        transaction.datetime = DateTime.parse(DateFormat('yyyy-MM-dd'). format(now));
       }
 
 
@@ -301,11 +305,6 @@ class _AddTransactionState extends State<AddTransaction> {
 
       int cp = await provider.getCount();
 
-
-
-
-
-
       print("after " + cp.toString());
       if(result!=0){
         //_showAlertDialog("success", "ine");
@@ -316,6 +315,8 @@ class _AddTransactionState extends State<AddTransaction> {
       //_showAlertDialog("j3j", "irhj");
 
     }
+
+    List<Transactions> l = await provider.getlastDays();
 
 
   }
