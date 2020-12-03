@@ -13,6 +13,7 @@ import 'package:mypocket/main.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:mypocket/database/Database_provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 //The page where a transction gets input
 
@@ -283,7 +284,7 @@ class _AddTransactionState extends State<AddTransaction> {
         transaction.datetime = DateTime.parse(DateFormat('yyyy-MM-dd'). format(now));
       }
       else{
-        transaction.datetime = DateTime.parse(DateFormat('yyyy-MM-dd'). format(now));
+        transaction.datetime = DateTime.parse(DateFormat('yyyy-MM-dd'). format(selectedDate));
       }
 
 
@@ -316,7 +317,8 @@ class _AddTransactionState extends State<AddTransaction> {
 
     }
 
-    List<Transactions> l = await provider.getlastDays();
+    List<int> l = await provider.getListforGraph();
+    List<Transactions> lst = await provider.getlastDays();
 
 
   }

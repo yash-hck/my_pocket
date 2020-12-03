@@ -24,6 +24,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<Transactions> list;
+  List<int> graphList = [];
   int count = 0;
 
 
@@ -74,6 +75,7 @@ class _HomeState extends State<Home> {
         setState(() {
           deleteT(list[index]);
           updateListView();
+          updateGraphView();
         });
       },
 
@@ -159,11 +161,22 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     //var datam = provider.getlastDays();
-    var datam = [
+
+    
+    List<amountPerDay> datam = new List<amountPerDay>();
+    /*List<amountPerDay> datam = [
       amountPerDay(2016, 'nov', Colors.red),
       amountPerDay(2017, 'dec', Colors.yellow),
       amountPerDay(2018, 'jan', Colors.green),
-    ];
+    ];*/
+    int i = 0;
+    for(int x in graphList){
+      datam.add(new amountPerDay(x,  DateFormat.MMMd().format(DateTime.now().subtract(Duration(days: i))), Colors.orange));
+      i++;
+    }
+    /*for(int i = 0;i <= 7;i++){
+      datam.add(new amountPerDay(graph[i],  DateFormat.yMMMd().format(DateTime.now().subtract(Duration(days: i))), Colors.orange));
+    }*/
 
     var series = [
       new charts.Series(
@@ -252,6 +265,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     updateListView();
+    updateGraphView();
   }
 
   void updateListView() {
@@ -277,5 +291,22 @@ class _HomeState extends State<Home> {
 
 
 
+  }
+
+  void updateGraphView() {
+    final Future<dynamic> dbfuture = provider.createDatabase();
+
+    dbfuture.then((database) {
+      Future<List<int>> transactionListFuture = provider.getListforGraph();
+
+      transactionListFuture.then((trList) {
+        setState(() {
+          this.graphList = trList;
+          //this.count = graphList.length;
+
+        });
+      });
+
+    });
   }
 }

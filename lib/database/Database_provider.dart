@@ -1,15 +1,16 @@
-import 'dart:async';
+
 
 //import 'dart:html';
 
 
-
+import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
-import 'dart:io';
+
+
 import 'package:mypocket/Transactions.dart';
 
 class DatabaseProvider {
@@ -153,7 +154,7 @@ class DatabaseProvider {
 
   Future<List<Transactions>> getlastDays() async {
     Database db = await this.database;
-    List<Map<String, dynamic>> result = await db.rawQuery("SELECT * FROM $TRANSACTION_TABLE WHERE $DATE < date('now','7 days')");
+    List<Map<String, dynamic>> result = await db.rawQuery("SELECT * FROM $TRANSACTION_TABLE WHERE $DATE > date('now','-7 days')");
     int cnt = result.length;
     print(result.runtimeType);
     List<Transactions> list = List<Transactions>();
@@ -166,7 +167,23 @@ class DatabaseProvider {
 
   }
 
+  Future<List<int>> getListforGraph()async{
 
+    Database db = await this.database;
+
+    List<int> list = new List<int>();
+    var prevans = await db.rawQuery("SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $DATE > date('now','0 days')");
+    list.add(prevans[0]['SUM(amount)']);
+    for(int i = -1; i > -7;i--){
+      var result = await db.rawQuery("SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $DATE > date('now','$i days')");
+      list.add(result[0]['SUM(amount)']-prevans[0]['SUM(amount)']);
+      //print('for ' + i.toString() + ' amount -> ' + (result[0]['SUM(amount)']-prevans[0]['SUM(amount)']).toString());
+      prevans = result;
+    }
+    return list;
+
+
+  }
 
 }
 
