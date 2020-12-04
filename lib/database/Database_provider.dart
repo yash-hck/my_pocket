@@ -176,7 +176,7 @@ class DatabaseProvider {
     list.add(prevans[0]['SUM(amount)']);
     for(int i = -1; i > -7;i--){
       var result = await db.rawQuery("SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $DATE > date('now','$i days')");
-      list.add(result[0]['SUM(amount)']-prevans[0]['SUM(amount)']);
+      list.add((result[0]['SUM(amount)']==null ? 0:  result[0]['SUM(amount)']) - (prevans[0]['SUM(amount)'] == null ? 0 :prevans[0]['SUM(amount)']));
       //print('for ' + i.toString() + ' amount -> ' + (result[0]['SUM(amount)']-prevans[0]['SUM(amount)']).toString());
       prevans = result;
     }

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 //import 'dart:html';
-import 'package:charts_flutter/flutter.dart' as charts;
 
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mypocket/Pages/all_transaction.dart';
@@ -43,6 +43,7 @@ class _HomeState extends State<Home> {
 
     if(result == true){
       updateListView();
+      updateGraphView();
     }
   }
 
@@ -174,29 +175,49 @@ class _HomeState extends State<Home> {
       datam.add(new amountPerDay(x,  DateFormat.MMMd().format(DateTime.now().subtract(Duration(days: i))), Colors.orange));
       i++;
     }
+    List<amountPerDay> reversedList = new List.from(datam.reversed);
     /*for(int i = 0;i <= 7;i++){
       datam.add(new amountPerDay(graph[i],  DateFormat.yMMMd().format(DateTime.now().subtract(Duration(days: i))), Colors.orange));
     }*/
 
     var series = [
-      new charts.Series(
-        id: 'Clicks',
+      LineSeries(dataSource: reversedList,
+          xValueMapper: (amountPerDay amt, _) => amt.day,
+          yValueMapper: (amountPerDay amt, _) => amt.amount,
+          dataLabelSettings: DataLabelSettings(
+              isVisible: true, labelPosition: ChartDataLabelPosition.outside)),
+
+
+        /*id: 'Clicks',
         domainFn: (amountPerDay clickData, _) => clickData.day,
         measureFn: (amountPerDay clickData, _) => clickData.amount,
         colorFn: (amountPerDay clickData, _) => clickData.color,
         data: datam,
-      ),
+      ),*/
     ];
 
-    var chart = charts.BarChart(
-      series,
-      animate: true,
+    var chart = SfCartesianChart(
+      primaryXAxis: CategoryAxis(
+        labelRotation: 45,
+        majorGridLines: MajorGridLines(width: 0),
+
+      ),
+      primaryYAxis: NumericAxis(
+        majorGridLines: MajorGridLines(width: 0),
+
+      ),
+      //plotAreaBorderWidth: 0,
+      title: ChartTitle(text: 'Expenses of last week'),
+      //legend: Legend(isVisible: true),
+      //tooltipBehavior: TooltipBehavior(enable: true),
+      series: series,
+      enableAxisAnimation: true,
     );
 
     var chartWidget = Padding(
-      padding: EdgeInsets.all(32.0),
+      padding: EdgeInsets.all(0),
       child: SizedBox(
-        height: 200.0,
+        height: 300,
         child: chart,
       ),
     );
