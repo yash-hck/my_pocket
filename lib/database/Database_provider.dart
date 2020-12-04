@@ -167,15 +167,32 @@ class DatabaseProvider {
 
   }
 
-  Future<List<int>> getListforGraph()async{
+  Future<List<int>> getListforInGraph()async{
 
     Database db = await this.database;
 
     List<int> list = new List<int>();
-    var prevans = await db.rawQuery("SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $DATE > date('now','0 days')");
+    var prevans = await db.rawQuery("SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $DATE > date('now','0 days') AND $INOUT = 1");
     list.add(prevans[0]['SUM(amount)']);
     for(int i = -1; i > -7;i--){
-      var result = await db.rawQuery("SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $DATE > date('now','$i days')");
+      var result = await db.rawQuery("SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $DATE > date('now','$i days') AND $INOUT = 1");
+      list.add((result[0]['SUM(amount)']==null ? 0:  result[0]['SUM(amount)']) - (prevans[0]['SUM(amount)'] == null ? 0 :prevans[0]['SUM(amount)']));
+      //print('for ' + i.toString() + ' amount -> ' + (result[0]['SUM(amount)']-prevans[0]['SUM(amount)']).toString());
+      prevans = result;
+    }
+    return list;
+
+
+  }
+  Future<List<int>> getListforExGraph()async{
+
+    Database db = await this.database;
+
+    List<int> list = new List<int>();
+    var prevans = await db.rawQuery("SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $DATE > date('now','0 days') AND $INOUT = 0");
+    list.add(prevans[0]['SUM(amount)']);
+    for(int i = -1; i > -7;i--){
+      var result = await db.rawQuery("SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $DATE > date('now','$i days') AND $INOUT = 0");
       list.add((result[0]['SUM(amount)']==null ? 0:  result[0]['SUM(amount)']) - (prevans[0]['SUM(amount)'] == null ? 0 :prevans[0]['SUM(amount)']));
       //print('for ' + i.toString() + ' amount -> ' + (result[0]['SUM(amount)']-prevans[0]['SUM(amount)']).toString());
       prevans = result;

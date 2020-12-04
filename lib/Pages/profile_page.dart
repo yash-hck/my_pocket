@@ -35,7 +35,9 @@ class _profileState extends State<profile> {
             Center(
               child: CircleAvatar(
                 backgroundImage: AssetImage('assets/icon.jpg'),
+
                 radius: 50,
+
               ),
             ),
             SizedBox(height: 20,),

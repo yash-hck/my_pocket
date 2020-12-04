@@ -317,7 +317,7 @@ class _AddTransactionState extends State<AddTransaction> {
 
     }
 
-    List<int> l = await provider.getListforGraph();
+    List<int> l = await provider.getListforInGraph();
     List<Transactions> lst = await provider.getlastDays();
 
 

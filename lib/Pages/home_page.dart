@@ -24,7 +24,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<Transactions> list;
-  List<int> graphList = [];
+  List<int> IncomegraphList = [];
+  List<int> ExpenseGraphList = [];
   int count = 0;
 
 
@@ -165,36 +166,57 @@ class _HomeState extends State<Home> {
 
     
     List<amountPerDay> datam = new List<amountPerDay>();
+
+    List<amountPerDay> datamex = new List<amountPerDay>();
     /*List<amountPerDay> datam = [
       amountPerDay(2016, 'nov', Colors.red),
       amountPerDay(2017, 'dec', Colors.yellow),
       amountPerDay(2018, 'jan', Colors.green),
     ];*/
     int i = 0;
-    for(int x in graphList){
+    for(int x in IncomegraphList){
       datam.add(new amountPerDay(x,  DateFormat.MMMd().format(DateTime.now().subtract(Duration(days: i))), Colors.orange));
       i++;
     }
+    i = 0;
+    for(int x in ExpenseGraphList){
+      datamex.add(new amountPerDay(x,  DateFormat.MMMd().format(DateTime.now().subtract(Duration(days: i))), Colors.orange));
+      i++;
+    }
     List<amountPerDay> reversedList = new List.from(datam.reversed);
+    List<amountPerDay> reversedListex = new List.from(datamex.reversed);
+
     /*for(int i = 0;i <= 7;i++){
       datam.add(new amountPerDay(graph[i],  DateFormat.yMMMd().format(DateTime.now().subtract(Duration(days: i))), Colors.orange));
     }*/
 
     var series = [
-      LineSeries(dataSource: reversedList,
+      LineSeries(
+          dataSource: reversedList,
+          xValueMapper: (amountPerDay amt, _) => amt.day,
+          yValueMapper: (amountPerDay amt, _) => amt.amount,
+          dataLabelSettings: DataLabelSettings(
+              isVisible: true, labelPosition: ChartDataLabelPosition.outside)),
+
+      LineSeries(
+          dataSource: reversedListex,
           xValueMapper: (amountPerDay amt, _) => amt.day,
           yValueMapper: (amountPerDay amt, _) => amt.amount,
           dataLabelSettings: DataLabelSettings(
               isVisible: true, labelPosition: ChartDataLabelPosition.outside)),
 
 
-        /*id: 'Clicks',
+
+      /*id: 'Clicks',
         domainFn: (amountPerDay clickData, _) => clickData.day,
         measureFn: (amountPerDay clickData, _) => clickData.amount,
         colorFn: (amountPerDay clickData, _) => clickData.color,
         data: datam,
       ),*/
     ];
+
+
+
 
     var chart = SfCartesianChart(
       primaryXAxis: CategoryAxis(
@@ -206,7 +228,7 @@ class _HomeState extends State<Home> {
         majorGridLines: MajorGridLines(width: 0),
 
       ),
-      //plotAreaBorderWidth: 0,
+      plotAreaBorderWidth: 0,
       title: ChartTitle(text: 'Expenses of last week'),
       //legend: Legend(isVisible: true),
       //tooltipBehavior: TooltipBehavior(enable: true),
@@ -318,11 +340,21 @@ class _HomeState extends State<Home> {
     final Future<dynamic> dbfuture = provider.createDatabase();
 
     dbfuture.then((database) {
-      Future<List<int>> transactionListFuture = provider.getListforGraph();
+      Future<List<int>> transactionListFuture = provider.getListforInGraph();
+      Future<List<int>> ExpenseListFuture = provider.getListforExGraph();
+
 
       transactionListFuture.then((trList) {
         setState(() {
-          this.graphList = trList;
+          this.IncomegraphList = trList;
+          //this.count = graphList.length;
+
+        });
+      });
+
+      ExpenseListFuture.then((trList) {
+        setState(() {
+          this.ExpenseGraphList = trList;
           //this.count = graphList.length;
 
         });
