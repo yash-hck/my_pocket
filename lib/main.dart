@@ -12,7 +12,6 @@ import 'Pages/all_transaction.dart';
 import 'Pages/profile_page.dart';
 void main() async{
 
-
   print("app start");
   WidgetsFlutterBinding.ensureInitialized();
   print('en');

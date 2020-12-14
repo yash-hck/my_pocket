@@ -14,7 +14,10 @@ import 'package:path/path.dart';
 import 'package:mypocket/Transactions.dart';
 
 class DatabaseProvider {
+  String USER_TABLE = 'users_table';
+  String UID = 'user_id';
 
+  String USERNAME = 'user_name';
   String TRANSACTION_TABLE = 'transaction_table';
   String ID = 'tid';
   String TITLE = 'title';
@@ -49,6 +52,7 @@ class DatabaseProvider {
           print("database created");
           await _databaseProvider.execute(
               'CREATE TABLE $TRANSACTION_TABLE ($ID INTEGER PRIMARY KEY AUTOINCREMENT, $TITLE TEXT,  $AMOUNT NUMBER, $INOUT NUMBER, $DATE DATETIME)');
+          await _databaseProvider.execute('CREATE TABLE $USER_TABLE ($UID INTEGER PRIMARY KEY, $USERNAME TEXT, $ID, INTEGER)');
         }
     );
   }

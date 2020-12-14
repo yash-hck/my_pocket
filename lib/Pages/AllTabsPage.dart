@@ -28,7 +28,7 @@ class _AllTabsState extends State<AllTabs> {
   int curr_press = 0;
 
   PageController _pageController = PageController();
-  List<Widget> _screen = [Home(), allTranactionPage(), profile()];
+  List<Widget> _screen = [Home(), allTranactionPage(),  profile()];
 
   void _onPageChanged(int index){
 
@@ -87,6 +87,20 @@ class _AllTabsState extends State<AllTabs> {
               ),
             ),
           ),
+          /*Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Container(
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(Icons.insert_chart),
+                    Text("Stats")
+
+                  ],
+                ),
+              ),
+            ),
+          )*/
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
             child: Container(

@@ -2,6 +2,9 @@ import 'dart:async';
 
 //import 'dart:html';
 
+import 'package:firebase_database/firebase_database.dart';
+import 'package:mypocket/Pages/customDailog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -29,6 +32,10 @@ class _HomeState extends State<Home> {
   int count = 0;
 
 
+  int budget;
+  final databaseReference = FirebaseDatabase.instance.reference();
+
+  ChartSeriesController chartSeriesController1, chartSeriesController2;
   DatabaseProvider provider = DatabaseProvider();
 
   Future navigatetoPage(Transactions transactions, String operation) async{
@@ -164,7 +171,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     //var datam = provider.getlastDays();
 
-    
+    updateBudget();
     List<amountPerDay> datam = new List<amountPerDay>();
 
     List<amountPerDay> datamex = new List<amountPerDay>();
@@ -195,6 +202,20 @@ class _HomeState extends State<Home> {
           dataSource: reversedList,
           xValueMapper: (amountPerDay amt, _) => amt.day,
           yValueMapper: (amountPerDay amt, _) => amt.amount,
+          animationDuration: 2000,
+          onRendererCreated: (ChartSeriesController controller){
+            chartSeriesController1 = controller;
+          },
+          markerSettings: MarkerSettings(
+            isVisible: true,
+            color: Colors.white,
+            shape: DataMarkerType.circle,
+            borderColor: Colors.blue,
+            height: 5,
+            width: 5,
+            borderWidth: 4
+          ),
+
           dataLabelSettings: DataLabelSettings(
               isVisible: true, labelPosition: ChartDataLabelPosition.outside)),
 
@@ -202,6 +223,19 @@ class _HomeState extends State<Home> {
           dataSource: reversedListex,
           xValueMapper: (amountPerDay amt, _) => amt.day,
           yValueMapper: (amountPerDay amt, _) => amt.amount,
+          animationDuration: 4500,
+          onRendererCreated: (ChartSeriesController controller){
+            chartSeriesController2 = controller;
+          },
+          markerSettings: MarkerSettings(
+              isVisible: true,
+              color: Colors.white,
+              shape: DataMarkerType.circle,
+              borderColor: Colors.redAccent,
+              height: 5,
+              width: 5,
+              borderWidth: 4
+          ),
           dataLabelSettings: DataLabelSettings(
               isVisible: true, labelPosition: ChartDataLabelPosition.outside)),
 
@@ -226,6 +260,8 @@ class _HomeState extends State<Home> {
       ),
       primaryYAxis: NumericAxis(
         majorGridLines: MajorGridLines(width: 0),
+        axisLine: AxisLine(width: 0)
+
 
       ),
       plotAreaBorderWidth: 0,
@@ -254,35 +290,50 @@ class _HomeState extends State<Home> {
         ),
         backgroundColor: Colors.blue[300],
       ),
-      body:Column(
+      body: SafeArea(
 
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            child: chartWidget,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Recents->',
+        child: Column(
 
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+
+            Expanded(
+              child: ListView.builder(
+                itemCount: count < 7? count : 7,
+
+                itemBuilder: (BuildContext ctxt, int index) {
+                  if(index == 0){
+                    // ignore: missing_return
+                    return budget!=null? showInfoCard():requestBudgetCard();
+                  }
+                  if(index == 1){
+                    return chartWidget;
+                  }
+                  if (index == 2){
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Recents->',
+
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey
+
+                        ),
+                      ),
+                    );
+                  }
+                  else
+                  return buildbody(ctxt, index);
+
+                },
 
               ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: count < 5 ? count : 5,
-
-              itemBuilder: (BuildContext ctxt, int index) => buildbody(ctxt, index),
-
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
 
 
@@ -307,8 +358,11 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    updateBudget();
     updateListView();
     updateGraphView();
+    chartSeriesController1?.animate();
+    chartSeriesController2?.animate();
   }
 
   void updateListView() {
@@ -361,5 +415,66 @@ class _HomeState extends State<Home> {
       });
 
     });
+  }
+
+  void updateBudget() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String s = preferences.getString('budget');
+    if(s!=null)
+    budget = int.parse(s);
+  }
+
+  showInfoCard() {
+    return Text('hello world');
+  }
+
+  Widget requestBudgetCard() {
+
+    return GestureDetector(
+      onTap: (){
+        showDialog(
+          context: context,
+          builder: (BuildContext context){
+            return CustomDailogBox(
+              title: 'Add your Budget here',
+              description: 'here we go here we go here we go' ,
+              text1: 'Add',
+            );
+          }
+        );
+      },
+      child: Container(
+        child: Card(
+
+          color: Colors.blueAccent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25)
+          ),
+          elevation: 10,
+          shadowColor: Colors.black,
+
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Enter your budget to keeep track of it',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white70
+                  ),
+                  ),
+                ),
+                SizedBox(height: 20,)
+              ],
+            ),
+          ),
+
+        ),
+      ),
+    );
+
   }
 }
