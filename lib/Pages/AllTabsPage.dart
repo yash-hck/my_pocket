@@ -3,7 +3,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:mypocket/Pages/profile_page.dart';
-
+import 'all_transaction.dart';
 import 'all_transaction.dart';
 import 'home_page.dart';
 
@@ -28,7 +28,7 @@ class _AllTabsState extends State<AllTabs> {
   int curr_press = 0;
 
   PageController _pageController = PageController();
-  List<Widget> _screen = [Home(), allTranactionPage(),  profile()];
+  List<Widget> _screen = [Home(), AllTransaction() ,  profile()];
 
   void _onPageChanged(int index){
 

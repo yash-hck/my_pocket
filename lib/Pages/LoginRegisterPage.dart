@@ -550,7 +550,9 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
 
   Future<String> HandleSignUp() async{
     try{
+      print('started');
       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password);
+      print('ended');
     }
     on FirebaseAuthException catch(e){
       print("failed");

@@ -158,6 +158,7 @@ class DatabaseProvider {
 
   Future<List<Transactions>> getlastDays() async {
     Database db = await this.database;
+
     List<Map<String, dynamic>> result = await db.rawQuery("SELECT * FROM $TRANSACTION_TABLE WHERE $DATE > date('now','-7 days')");
     int cnt = result.length;
     print(result.runtimeType);
@@ -188,6 +189,20 @@ class DatabaseProvider {
 
 
   }
+
+  Future<int> getLastMonthTransaction() async{
+    Database db = await this.database;
+    var date = DateTime.now().day;
+    int d = -1*int.parse(date.toString());
+    var resultinc = await db.rawQuery("SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $DATE > date('now','$d days') AND $INOUT = 1");
+    var resultExp = await db.rawQuery("SELECT SUM($AMOUNT) FROM $TRANSACTION_TABLE WHERE $DATE > date('now','$d days') AND $INOUT = 0");
+    int inc = resultinc[0]['SUM(amount)'] == null?0:resultinc[0]['SUM(amount)'];
+    int exp = resultinc[0]['SUM(amount)'] == null?0:resultExp[0]['SUM(amount)'];
+
+    return exp - inc;
+
+  }
+
   Future<List<int>> getListforExGraph()async{
 
     Database db = await this.database;

@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
   List<int> IncomegraphList = [];
   List<int> ExpenseGraphList = [];
   int count = 0;
-
+  int lastTransactions;
 
   int budget;
   final databaseReference = FirebaseDatabase.instance.reference();
@@ -50,6 +50,8 @@ class _HomeState extends State<Home> {
 
 
     if(result == true){
+      updateBudget();
+      updatemonthTransaction();
       updateListView();
       updateGraphView();
     }
@@ -83,6 +85,7 @@ class _HomeState extends State<Home> {
 
         setState(() {
           deleteT(list[index]);
+          updatemonthTransaction();
           updateListView();
           updateGraphView();
         });
@@ -172,6 +175,7 @@ class _HomeState extends State<Home> {
     //var datam = provider.getlastDays();
 
     updateBudget();
+    updatemonthTransaction();
     List<amountPerDay> datam = new List<amountPerDay>();
 
     List<amountPerDay> datamex = new List<amountPerDay>();
@@ -359,6 +363,8 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     updateBudget();
+    updatemonthTransaction();
+
     updateListView();
     updateGraphView();
     chartSeriesController1?.animate();
@@ -424,8 +430,63 @@ class _HomeState extends State<Home> {
     budget = int.parse(s);
   }
 
-  showInfoCard() {
-    return Text('hello world');
+  showInfoCard(){
+
+
+    String message = 'You are going great and with in the budget';
+    int days = int.parse(DateTime.now().day.toString());
+    if( lastTransactions != null && lastTransactions > (budget)*(days/30)){
+      int data = (lastTransactions - (budget)*(days/30)).round();
+      message = 'you are getting outside budget by $data Rs';
+    }
+
+    return GestureDetector(
+      onTap: (){
+        showDialog(
+            context: context,
+            builder: (BuildContext context){
+              return CustomDailogBox(
+                title: 'Add your Budget here',
+                description: 'here we go here we go here we go' ,
+                text1: 'Add',
+              );
+            }
+        );
+      },
+      child: Container(
+
+        child: Card(
+
+          color: Colors.grey[300],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
+          ),
+          elevation: 10,
+          shadowColor: Colors.black,
+
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(message,
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+
+        ),
+      ),
+    );
+
   }
 
   Widget requestBudgetCard() {
@@ -476,5 +537,13 @@ class _HomeState extends State<Home> {
       ),
     );
 
+  }
+
+  void updatemonthTransaction() async {
+    Future<int> lastmonth = provider.getLastMonthTransaction();
+    lastmonth.then((value) {
+      this.lastTransactions = value;
+
+    });
   }
 }
